@@ -80,7 +80,7 @@ const teapotParent = new THREE.Object3D();
 scene.add(teapotParent);
 loadTeapot(teapotParent);
 
-const weirdThing = await loadGLTFModel('models/weird_thing.glb');
+const weirdThing = await loadGLTFModel('models/weird_thing_colored.glb');
 weirdThing.scale.x /= 2;
 weirdThing.scale.y /= 2;
 weirdThing.scale.z /= 2;
