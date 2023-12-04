@@ -37,7 +37,7 @@ export function loadMonkey(parent) {
 	const loader = new PLYLoader();
 	loader.load('models/monkey.ply',
 		function (geometry) {
-			let tmp = new THREE.Mesh(geometry)
+			let tmp = new THREE.Mesh(geometry);
 			tmp.material = new THREE.MeshStandardMaterial({ color: '#0000ee' });
 			parent.add(tmp);
 
@@ -73,4 +73,23 @@ export function loadHSWLogo(parent) {
 			console.error(error);
 			console.log("ERROR LOADING GLB");
 		});
+}
+
+export function loadGLTFModel(path) {
+	return new Promise((resolve, reject) => {
+		const loaderGLTF = new GLTFLoader();
+		loaderGLTF.load(path,
+			function (gltf) {
+				resolve(gltf.scene);
+				// parent.add(gltf.scene);
+			},
+			function (xhr) {
+				console.log((xhr.loaded / xhr.total * 100) + '% loaded of GLB');
+			},
+			function (error) {
+				console.error(error);
+				console.log("ERROR LOADING GLB");
+				reject(error);
+			});
+	});
 }

@@ -4,7 +4,7 @@
 // Licensed under CC-BY 4.0 https://creativecommons.org/licenses/by/4.0/
 
 import * as THREE from 'three';
-import { loadHSWLogo } from './loadingExamples.js';
+import { loadGLTFModel, loadHSWLogo } from './loadingExamples.js';
 import { loadTeapot } from './loadingExamples.js';
 import { loadMonkey } from './loadingExamples.js';
 import * as uxvis from './uxvislib.js';
@@ -18,13 +18,13 @@ let geometryHasBeenDescribed = false;
 // Debugging function
 function describeGeometryOnConsoleOnce() {
 	// Look into loaded geometry
-	console.log("monkey")
-	console.log(monkeyParent)
-	console.log("logo")
-	console.log(logoParent)
-	console.log("teapot")
-	console.log(teapotParent)
-	geometryHasBeenDescribed = true
+	console.log("monkey");
+	console.log(monkeyParent);
+	console.log("logo");
+	console.log(logoParent);
+	console.log("teapot");
+	console.log(teapotParent);
+	geometryHasBeenDescribed = true;
 }
 
 // A function that allows the scene to be rendered repeatedly
@@ -35,11 +35,12 @@ function animate() {
 	//  if (!geomteryHasBeenDescribed)
 	//   	describeGeometryOnConsoleOnce()
 
-	uxvis.presentationRotation(cube)
+	uxvis.presentationRotation(cube);
 	uxvis.presentationRotation(monkeyParent);
 	uxvis.presentationRotation(logoParent);
 	uxvis.presentationRotation(teapotParent);
-	
+	uxvis.presentationRotation(weirdThing);
+
 	renderer.render(scene, camera);
 }
 
@@ -58,7 +59,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-uxvis.setupThreePointLighting(scene, sceneRadius)
+uxvis.setupThreePointLighting(scene, sceneRadius);
 
 // Exmample 1: Create a cube
 const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -69,16 +70,24 @@ cube.position.y += 2; // move cube upwards a bit
 
 const monkeyParent = new THREE.Object3D();
 scene.add(monkeyParent);
-loadMonkey(monkeyParent)
+loadMonkey(monkeyParent);
 
 const logoParent = new THREE.Object3D();
 scene.add(logoParent);
-loadHSWLogo(logoParent)
+loadHSWLogo(logoParent);
 
 const teapotParent = new THREE.Object3D();
 scene.add(teapotParent);
-loadTeapot(teapotParent)
+loadTeapot(teapotParent);
+
+const weirdThing = await loadGLTFModel('models/weird_thing.glb');
+weirdThing.scale.x /= 2;
+weirdThing.scale.y /= 2;
+weirdThing.scale.z /= 2;
+weirdThing.position.x += 2;
+scene.add(weirdThing);
+
 
 // Start repeated rendering (animation)
-console.log("Start animation")
+console.log("Start animation");
 animate();
