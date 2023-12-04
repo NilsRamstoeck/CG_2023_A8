@@ -39,7 +39,7 @@ function animate() {
 	uxvis.presentationRotation(monkeyParent);
 	uxvis.presentationRotation(logoParent);
 	uxvis.presentationRotation(teapotParent);
-	uxvis.presentationRotation(weirdThing);
+	customModels.forEach(m => uxvis.presentationRotation(m));
 
 	renderer.render(scene, camera);
 }
@@ -56,7 +56,7 @@ camera.position.z = sceneRadius; // Move camera backwrds, away from scene origin
 
 // Renderer setup
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth, window.innerHeight - 150);
 document.body.appendChild(renderer.domElement);
 
 uxvis.setupThreePointLighting(scene, sceneRadius);
@@ -80,13 +80,30 @@ const teapotParent = new THREE.Object3D();
 scene.add(teapotParent);
 loadTeapot(teapotParent);
 
-const weirdThing = await loadGLTFModel('models/weird_thing_colored.glb');
-weirdThing.scale.x /= 2;
-weirdThing.scale.y /= 2;
-weirdThing.scale.z /= 2;
-weirdThing.position.x += 2;
-scene.add(weirdThing);
 
+const radios = [...document.querySelectorAll('input[type=radio]')];
+const customModels = [];
+for (const radio of radios) {
+
+	const model = await loadGLTFModel(radio.value);
+	model.scale.x /= 2;
+	model.scale.y /= 2;
+	model.scale.z /= 2;
+	model.position.x += 2;
+	customModels.push(model);
+
+	radio.addEventListener('change', () => {
+		if (!radio.checked) return;
+		else radios.filter(r => r != radio).forEach(r => r.dispatchEvent(new Event('hide-model')));
+		scene.add(model);
+	});
+
+	radio.addEventListener('hide-model', _ => scene.remove(model));
+
+}
+
+radios[0].checked = true;
+radios[0].dispatchEvent(new Event('change'));
 
 // Start repeated rendering (animation)
 console.log("Start animation");
